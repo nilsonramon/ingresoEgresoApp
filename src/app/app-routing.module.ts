@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './auth/dashboard/dashboard.component';
 import { dashboardRoutes } from './auth/dashboard/dashboard-routes';
+import { AuthGuard } from './service/auth.guard';
 
 const routes: Routes = [
 
@@ -19,8 +20,8 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    children: dashboardRoutes
-
+    children: dashboardRoutes,
+    canActivate: [AuthGuard]
   },
   {
     path: '**',
@@ -31,12 +32,12 @@ const routes: Routes = [
 
 
 @NgModule({
-imports: [
-  RouterModule.forRoot(routes)
-],
-exports: [
-  RouterModule
-]
+  imports: [
+    RouterModule.forRoot(routes)
+  ],
+  exports: [
+    RouterModule
+  ]
 })
 
 export class AppRoutingModule {
