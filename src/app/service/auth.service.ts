@@ -3,29 +3,49 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { map } from 'rxjs/operators';
 import { Usuario } from '../models/usuario.model';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AppState } from '../app.reducers';
+import { Store } from '@ngrx/store';
+import * as authActions from '../auth/auth.actions';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(public auth: AngularFireAuth,
-              private firestorm: AngularFirestore) { }
+  userSubscription: Subscription;
 
-  initAuthListener(){
-    this.auth.authState.subscribe( fuser => {
-      console.log(fuser);
+  constructor(public auth: AngularFireAuth,
+    private firestorm: AngularFirestore,
+    private store: Store<AppState>) { }
+
+  initAuthListener() {
+    this.auth.authState.subscribe(fuser => {
+      console.log(fuser?.uid);
+
+      if (fuser) {
+
+        this.userSubscription = this.firestorm.doc(`${fuser.uid}/usuario`).valueChanges()
+          .subscribe((firestormUser: any) => {
+            const user = Usuario.fromFirebase(firestormUser);
+            this.store.dispatch(authActions.setUser({ user }));
+          })
+      } else {
+        this.userSubscription.unsubscribe();
+        this.store.dispatch(authActions.unSetUser());
+      }
+
     })
   }
 
   crearUsuario(nombre: string, email: string, password: string) {
 
     return this.auth.createUserWithEmailAndPassword(email, password)
-    .then(({user}) =>{
-      const  newUser = new Usuario(user.uid,nombre,user.email);
-      return this.firestorm.doc(`${user.uid}/usuario`)
-      .set({...newUser});
-    });
+      .then(({ user }) => {
+        const newUser = new Usuario(user.uid, nombre, user.email);
+        return this.firestorm.doc(`${user.uid}/usuario`)
+          .set({ ...newUser });
+      });
 
   }
 
@@ -35,11 +55,11 @@ export class AuthService {
 
   }
 
-  logout(){
+  logout() {
     return this.auth.signOut();
   }
 
-  isAuth(){
+  isAuth() {
     return this.auth.authState.pipe(
       map(fbUser => fbUser != null ? true : false)
     )
