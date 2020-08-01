@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -62,7 +62,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.authService.crearUsuario(nombre, correo, password)
       .then(credenciales => {
-        console.log(credenciales);
         /*Swal.close();*/
         this.store.dispatch(ui.stopLoading())
         this.router.navigate(['/']);

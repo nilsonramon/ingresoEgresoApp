@@ -14,12 +14,23 @@
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody *ngFor="let item of ingresosEgresos">
                 <tr>
-                  <td>Descripción</td>
-                  <td>Monto</td>
-                  <td>Tipo</td>
-                  <td>acciones</td>
+                  <td>{{item.descripcion}}</td>
+                  <td>{{item.monto}}</td>
+                  <td
+                  [class.text-success]="item.tipo ==='ingreso'"
+                  [class.text-danger]="item.tipo ==='egreso'"
+                  >{{item.tipo}}</td>
+                  <td>
+                    <button class="btn btn-danger" type="button"
+                    (click)="borrar(item.uid)"
+                    >
+                    <i class="fa fa-trash">
+                      Borrar
+                    </i>
+                  </button>
+                  </td>
                 </tr>
               </tbody>
 
@@ -30,4 +41,3 @@
         </div>
     </div>
 </div>
-  
