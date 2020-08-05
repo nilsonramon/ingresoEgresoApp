@@ -14,7 +14,7 @@
                 </tr>
               </thead>
 
-              <tbody *ngFor="let item of ingresosEgresos">
+              <tbody *ngFor="let item of ingresosEgresos | ordenIngreso">
                 <tr>
                   <td>{{item.descripcion}}</td>
                   <td>{{item.monto}}</td>
