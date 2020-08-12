@@ -1,3 +1,4 @@
+import { AppStateWithIngreso } from './../ingreso-egreso.reducer';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.reducers';
@@ -23,7 +24,7 @@ export class EstadisticaComponent implements OnInit {
   public doughnutChartData: MultiDataSet = [
     []
   ];
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppStateWithIngreso>) { }
 
   ngOnInit(): void {
 
